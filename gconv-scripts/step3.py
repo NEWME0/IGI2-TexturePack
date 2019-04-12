@@ -1,8 +1,10 @@
 import os
 import subprocess
 from settings import (FILELIST_RES_PATH,
+					  TEXTURES_UNPACKED_PATH,
 					  GCONV_PATH,
-					  QSCRIPT_PATH)
+					  QSCRIPT_PATH,
+					  BAT_PATH)
 
 
 # check if exist game converter
@@ -19,8 +21,20 @@ with open(QSCRIPT_PATH, 'w') as qscript:
 			qscript.write("ExtractResource(\"{0}\");\n".format(line))
 
 
-ARGS = GCONV_PATH + ' ' + QSCRIPT_PATH
+
+
+
+#-InputPath=export/ -OutputPath=output/
+
+INPUT_PATH = "-OutputPath=" + '..\\' + TEXTURES_UNPACKED_PATH
+
+
+ARGS = GCONV_PATH + ' ' + QSCRIPT_PATH + ' ' + INPUT_PATH
 ARGS = ARGS.replace('\\', '/')
 print(ARGS)
+
+with open(BAT_PATH, 'w') as bat:
+	bat.write(ARGS + '\n')
+	bat.write("pause\n")
 
 subprocess.call(ARGS)

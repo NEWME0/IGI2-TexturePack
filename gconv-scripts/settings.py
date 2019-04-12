@@ -11,3 +11,4 @@ TEXTURES_UNPACKED_PATH = "..\\textures-unpacked\\"
 
 GCONV_PATH = "..\\gconv\\bin\\gconv.exe"
 QSCRIPT_PATH = os.path.join(TEXTURES_UNPACKED_PATH, 'temp.qsc')
+BAT_PATH = os.path.join(TEXTURES_UNPACKED_PATH, 'temp.bat')
