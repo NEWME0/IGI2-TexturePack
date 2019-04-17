@@ -1,5 +1,7 @@
 import os
 
+TEX_PATH = "textures-unpacked\\common\\textures\\bloodpool.tex"
+
 
 FILELIST_JPG_PATH = "..\\textures-filelist\\filelist-jpg.txt"
 FILELIST_RES_PATH = "..\\textures-filelist\\filelist-res.txt"

@@ -22,8 +22,6 @@ with open(QSCRIPT_PATH, 'w') as qscript:
 
 
 
-
-
 #-InputPath=export/ -OutputPath=output/
 
 INPUT_PATH = "-OutputPath=" + '..\\' + TEXTURES_UNPACKED_PATH
