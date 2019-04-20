@@ -1,5 +1,4 @@
 import numpy as np
-from struct import unpack
 
 
 TGA_PMAP_TYPE_NONE = 0
@@ -84,3 +83,141 @@ class TGAObject:
 			f.write(self.head.tobytes())
 			f.write(self.pmap.tobytes())
 			f.write(self.foot.tobytes())
+
+
+from struct import unpack, pack
+
+
+COLORMAP_TYPE_NONE = 0
+COLORMAP_TYPE_TRUE = 1
+
+PIXELMAP_TYPE_NONE = 0
+PIXELMAP_TYPE_CMAP = 1
+PIXELMAP_TYPE_TRUE = 2
+PIXELMAP_TYPE_MONO = 3
+PIXELMAP_TYPE_CMAP_RLE = 9
+PIXELMAP_TYPE_TRUE_RLE = 10
+PIXELMAP_TYPE_MONO_RLE = 11
+
+TGA_SIGNATURE = b'TRUEVISION-XFILE.\x00'
+
+
+class TGA_IO:
+	_id_size = 0
+	_cmap_type = COLORMAP_TYPE_NONE
+	_pmap_type = PIXELMAP_TYPE_NONE
+	_cmap_entry_first = 0
+	_cmap_entry_count = 0
+	_cmap_entry_width = 0
+	_pmap_origin_x = 0
+	_pmap_origin_y = 0
+	_pmap_size_x = 0
+	_pmap_size_y = 0
+	_pmap_depth = 0
+	_pmap_flags = 0
+	_id = None
+	_cmap = None
+	_pmap = None
+	_ext_offset = 0
+	_dev_offset = 0
+	_signature = b'TRUEVISION-XFILE.\x00'
+
+	def reset(self):
+		self._id_size = 0
+		self._cmap_type = COLORMAP_TYPE_NONE
+		self._pmap_type = PIXELMAP_TYPE_NONE
+		self._cmap_entry_first = 0
+		self._cmap_entry_count = 0
+		self._cmap_entry_width = 0
+		self._pmap_origin_x = 0
+		self._pmap_origin_y = 0
+		self._pmap_size_x = 0
+		self._pmap_size_y = 0
+		self._pmap_depth = 0
+		self._pmap_flags = 0
+		self._id = None
+		self._cmap = None
+		self._pmap = None
+		self._ext_offset = 0
+		self._dev_offset = 0
+		self._signature = b'TRUEVISION-XFILE.\x00'
+
+	def check(self):
+		return True
+
+	def save(self, path):
+		with open(path, 'wb') as f:
+			f.write(pack('B', self._id_size))
+			f.write(pack('B', self._cmap_type))
+			f.write(pack('B', self._pmap_type))
+			f.write(pack('H', self._cmap_entry_first))
+			f.write(pack('H', self._cmap_entry_count))
+			f.write(pack('B', self._cmap_entry_width))
+			f.write(pack('H', self._pmap_origin_x))
+			f.write(pack('H', self._pmap_origin_y))
+			f.write(pack('H', self._pmap_size_x))
+			f.write(pack('H', self._pmap_size_y))
+			f.write(pack('B', self._pmap_depth))
+			f.write(pack('B', self._pmap_flags))
+
+			if self._id:
+				f.write(self._id)
+
+			if self._cmap:
+				f.write(self._cmap)
+
+			if self._pmap:
+				f.write(self._pmap)
+
+			f.write(pack('I', self._ext_offset))
+			f.write(pack('I', self._dev_offset))
+			f.write(self._signature)
+
+	def load(self, path):
+		with open(path, 'rb') as f:
+			self._id_size          = unpack('B', f.read(1))
+			self._cmap_type        = unpack('B', f.read(1))
+			self._pmap_type        = unpack('B', f.read(1))
+			self._cmap_entry_first = unpack('H', f.read(2))
+			self._cmap_entry_count = unpack('H', f.read(2))
+			self._cmap_entry_width = unpack('B', f.read(1))
+			self._pmap_origin_x    = unpack('H', f.read(2))
+			self._pmap_origin_y    = unpack('H', f.read(2))
+			self._pmap_size_x      = unpack('H', f.read(2))
+			self._pmap_size_y      = unpack('H', f.read(2))
+			self._pmap_depth       = unpack('B', f.read(1))
+			self._pmap_flags       = unpack('B', f.read(1))
+
+			if self._id_size:
+				self._id = f.read(self._id_size)
+
+			if self._cmap_type:
+				self._cmap = f.read(self._cmap_entry_count * self._cmap_entry_width)
+
+			if self._pmap_type:
+				self._pmap = f.read(self._pmap_size_x * self._pmap_size_y * (self._pmap_depth // 8))
+
+			self._ext_offset = unpack('I', f.read(4))
+			self._dev_offset = unpack('I', f.read(4))
+			self._signature = f.read(18)
+
+
+
+class TGA_Object(TGA_IO):
+	def getId(self):
+		pass
+
+	def setId(self):
+		pass
+
+	def getColorMap(self):
+		pass
+
+	def setColorMap(self):
+		pass
+
+	def getPixelMap(self):
+		pass
+
+	def setPixelMap(self):
+		pass
